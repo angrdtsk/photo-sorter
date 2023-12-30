@@ -1,0 +1,7 @@
+cmake_minimum_required(VERSION 3.12)
+project(sorter)
+
+find_package(exiv2lib REQUIRED CONFIG NAMES exiv2)
+link_libraries(exiv2lib)
+
+add_executable(sorter main.cpp)

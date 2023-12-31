@@ -5,6 +5,8 @@
 #include <regex>
 #include <algorithm>
 
+#include <cxxopts.hpp>
+
 #include <exiv2/image.hpp>
 #include <exiv2/error.hpp>
 
@@ -175,26 +177,34 @@ void copy_file(std::filesystem::path &source_file_path, const std::filesystem::p
 
 int main(int argc, char ** argv)
 {
-    if (argc < 3)
+    cxxopts::Options cl_options("photo-sorter", "Photo file sorter");
+    cl_options.add_options()
+        ("source", "Source directory", cxxopts::value<std::string>())
+        ("target", "Target directory", cxxopts::value<std::string>())
+        ;
+    cl_options.parse_positional({"source", "target"});
+    cl_options.positional_help("<source> <target>");
+    auto cl_parser_result = cl_options.parse(argc, argv);
+
+    if ((cl_parser_result.count("source") == 0) || (cl_parser_result.count("target") == 0))
     {
-        std::cout << "Two paths required" << std::endl;
+        std::cout << cl_options.help() << std::endl;
         return 0;
     }
 
-    if (!std::filesystem::exists(argv[1]))
+    const std::filesystem::path source_directory_path = cl_parser_result["source"].as<std::string>();
+    if (!std::filesystem::exists(source_directory_path))
     {
         std::cout << "Source directory given doesn't exist" << std::endl;
         return 0;
     }
 
-    if (!std::filesystem::exists(argv[2]))
+    const std::filesystem::path target_directory_path = cl_parser_result["target"].as<std::string>();
+    if (!std::filesystem::exists(target_directory_path))
     {
         std::cout << "Target directory given doesn't exist" << std::endl;
         return 0;
     }
-
-    const std::filesystem::path source_directory_path = argv[1];
-    const std::filesystem::path target_directory_path = argv[2];
 
     for (const auto &source_entry_it : std::filesystem::recursive_directory_iterator(source_directory_path))
     {

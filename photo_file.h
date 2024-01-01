@@ -8,6 +8,7 @@ class PhotoFile {
 public:
     PhotoFile(const std::filesystem::path &, const std::filesystem::path &);
     void copy_file();
+    bool is_within_date_range(std::time_t &, std::time_t &);
     static bool is_photo_file(const std::string &);
 
 private:

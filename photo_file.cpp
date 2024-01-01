@@ -8,6 +8,7 @@
 #include <algorithm>
 #include <sstream>
 #include <stdexcept>
+#include <ctime>
 
 #include <exiv2/image.hpp>
 #include <exiv2/error.hpp>
@@ -170,6 +171,28 @@ void PhotoFile::copy_file()
     catch (const std::filesystem::filesystem_error &e)
     {
         throw std::runtime_error("Couldn't copy file");
+    }
+}
+
+bool PhotoFile::is_within_date_range(std::time_t &start, std::time_t &end)
+{
+    std::tm tm{};
+    std::istringstream ss(m_timestamp_string);
+    ss >> std::get_time(&tm, "%Y:%m:%d %H:%M:%S");
+    std::time_t date = std::mktime(&tm);
+
+    if (date == -1)
+    {
+        throw std::runtime_error("Couldn't parse date from Exif data");
+    }
+
+    if ((date >= start) && (date <= end))
+    {
+        return true;
+    }
+    else
+    {
+        return false;
     }
 }
 

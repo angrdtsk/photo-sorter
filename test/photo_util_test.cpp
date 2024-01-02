@@ -1,4 +1,4 @@
-#include "../photo_util.h"
+#include "../lib/photo_util.h"
 
 #include "gtest/gtest.h"
 

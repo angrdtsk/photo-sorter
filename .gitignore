@@ -6,4 +6,3 @@ cmake_install.cmake
 sorter
 test/sorter-test
 _deps
-lib

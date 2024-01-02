@@ -9,5 +9,5 @@ FetchContent_Declare(
 
 FetchContent_MakeAvailable(googletest)
 
-add_executable(sorter-test photo_util_test.cpp ../photo_util.cpp)
-target_link_libraries(sorter-test gtest_main)
+add_executable(sorter-test photo_util_test.cpp)
+target_link_libraries(sorter-test gtest_main sorter-lib)

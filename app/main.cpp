@@ -4,7 +4,7 @@
 
 #include <cxxopts.hpp>
 
-#include "lib/photo_file.h"
+#include "../lib/photo_file.h"
 
 void parse_date_range_string(const std::string &string, std::time_t &time)
 {

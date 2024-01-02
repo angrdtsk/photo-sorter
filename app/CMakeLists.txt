@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.12)
-project(sorter)
+project(app)
 
 find_package(cxxopts REQUIRED)
 # cxxopts is a headers-only library so there is nothing to specify about linking
@@ -7,6 +7,5 @@ find_package(cxxopts REQUIRED)
 find_package(exiv2lib REQUIRED CONFIG NAMES exiv2)
 link_libraries(exiv2lib)
 
-add_subdirectory(lib)
-add_subdirectory(app)
-add_subdirectory(test)
+add_executable(sorter main.cpp)
+target_link_libraries(sorter sorter-lib)

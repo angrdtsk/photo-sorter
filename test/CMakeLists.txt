@@ -1,5 +1,7 @@
 project(sorter-test)
 
+SET(CMAKE_CXX_FLAGS "-g -O0 -Wall -fprofile-arcs -ftest-coverage")
+
 include(FetchContent)
 FetchContent_Declare(
   googletest
@@ -11,3 +13,10 @@ FetchContent_MakeAvailable(googletest)
 
 add_executable(sorter-test ../lib/photo_util.cpp photo_util_test.cpp)
 target_link_libraries(sorter-test gtest_main)
+
+find_program(LCOV lcov REQUIRED)
+find_program(GENHTML genhtml REQUIRED)
+add_custom_target(test_coverage
+    COMMAND ${LCOV} --directory . --capture --output-file coverage.info
+    COMMAND ${GENHTML} --demangle-cpp -o coverage coverage.info
+    )

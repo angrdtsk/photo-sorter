@@ -7,6 +7,5 @@ find_package(cxxopts REQUIRED)
 find_package(exiv2lib REQUIRED CONFIG NAMES exiv2)
 link_libraries(exiv2lib)
 
-add_subdirectory(lib)
 add_subdirectory(app)
 add_subdirectory(test)

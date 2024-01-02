@@ -7,5 +7,4 @@ find_package(cxxopts REQUIRED)
 find_package(exiv2lib REQUIRED CONFIG NAMES exiv2)
 link_libraries(exiv2lib)
 
-add_executable(sorter main.cpp)
-target_link_libraries(sorter sorter-lib)
+add_executable(sorter main.cpp ../lib/photo_file.cpp ../lib/photo_util.cpp)

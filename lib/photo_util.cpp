@@ -9,6 +9,19 @@
 
 std::string PhotoUtil::generate_directory_name(const std::string &exif_timestamp)
 {
+    // Validate the format on the input string. This is to work-around the
+    // observation that get_time() doesn't in anyway indicate whether the input
+    // string matches the format exactly. In practice, it accepts a date-only
+    // string, parsing it correctly, and a time-only string, apparently
+    // interpretting it as a date-only string.
+    std::regex regexp("[0-9]{4}:[0-9]{2}:[0-9]{2} [0-9]{2}:[0-9]{2}:[0-9]{2}");
+    std::smatch match;
+    std::regex_search(exif_timestamp, match, regexp);
+    if (match.size() != 1)
+    {
+        return "";
+    }
+
     struct std::tm tm;
     std::istringstream ss(exif_timestamp);
     ss >> std::get_time(&tm, "%Y:%m:%d %H:%M:%S");

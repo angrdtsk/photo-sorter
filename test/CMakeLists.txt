@@ -11,7 +11,7 @@ FetchContent_Declare(
 
 FetchContent_MakeAvailable(googletest)
 
-add_executable(sorter-test ../lib/photo_util.cpp photo_util_test.cpp)
+add_executable(sorter-test ../lib/photo_util.cpp photo_util_test.cpp ../lib/photo_data.cpp photo_data_test.cpp)
 target_link_libraries(sorter-test gtest_main)
 
 find_program(LCOV lcov REQUIRED)

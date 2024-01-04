@@ -25,6 +25,8 @@ PhotoData::PhotoData(const std::filesystem::path &path)
         throw RethrownException(error_string);
     }
 
+    // It's unclear what would make this fail. Removing metadata from a photo
+    // makes exif data fields empty but doesn't cause this to fail.
     try
     {
         image->readMetadata();

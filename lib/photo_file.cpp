@@ -11,6 +11,8 @@
 
 #include "photo_data.h"
 #include "photo_util.h"
+#include "rethrown_exception.h"
+#include "local_exception.h"
 
 
 PhotoFile::PhotoFile(const std::filesystem::path &source_file_path, const std::filesystem::path &target_directory_path)
@@ -41,7 +43,7 @@ void PhotoFile::copy_file()
         }
         catch (const std::filesystem::filesystem_error &e)
         {
-            throw std::runtime_error("Couldn't create directory");
+            throw RethrownException("Couldn't create directory");
         }
     }
 
@@ -51,7 +53,7 @@ void PhotoFile::copy_file()
     }
     catch (const std::filesystem::filesystem_error &e)
     {
-        throw std::runtime_error("Couldn't copy file");
+        throw RethrownException("Couldn't copy file");
     }
 }
 
@@ -64,7 +66,7 @@ bool PhotoFile::is_within_date_range(std::time_t &start, std::time_t &end)
 
     if (date == -1)
     {
-        throw std::runtime_error("Couldn't parse date from Exif data");
+        throw LocalException("Couldn't parse date from Exif data");
     }
 
     if ((date >= start) && (date <= end))

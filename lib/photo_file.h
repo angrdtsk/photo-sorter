@@ -4,6 +4,8 @@
 #include <filesystem>
 #include <string>
 
+#include "photo_data.h"
+
 class PhotoFile {
 public:
     PhotoFile(const std::filesystem::path &, const std::filesystem::path &);
@@ -14,11 +16,7 @@ public:
 private:
     std::filesystem::path m_source_file_path;
     std::filesystem::path m_target_directory_path;
-    std::string m_camera_model;
-    std::string m_timestamp_string;
-    std::time_t m_timestamp;
-    std::string m_target_subdirectory;
-    std::string m_target_filename;
+    std::unique_ptr<PhotoData> m_photo_data;
 };
 
 #endif

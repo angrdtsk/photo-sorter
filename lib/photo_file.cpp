@@ -9,9 +9,7 @@
 #include <stdexcept>
 #include <ctime>
 
-#include <exiv2/image.hpp>
-#include <exiv2/error.hpp>
-
+#include "photo_data.h"
 #include "photo_util.h"
 
 
@@ -20,66 +18,18 @@ PhotoFile::PhotoFile(const std::filesystem::path &source_file_path, const std::f
     m_source_file_path = source_file_path;
     m_target_directory_path = target_directory_path;
 
-    std::cout << "PhotoFile " << source_file_path << " " << target_directory_path << std::endl;
-
-    std::unique_ptr<Exiv2::Image> image;
-    try
-    {
-        image = Exiv2::ImageFactory::open(source_file_path);
-    }
-    catch(const Exiv2::Error &e)
-    {
-        std::string error_string = "Exiv2::ImageFactory::open failed: ";
-        error_string += e.what();
-        throw std::runtime_error(error_string);
-    }
-
-    try
-    {
-        image->readMetadata();
-    }
-    catch (const Exiv2::Error &e)
-    {
-        std::string error_string = "Exiv2::Image::readMetadata failed: ";
-        error_string += e.what();
-        throw std::runtime_error(error_string);
-    }
-
-    Exiv2::ExifData exif_data = image->exifData();
-    m_camera_model = exif_data["Exif.Image.Model"].toString();
-    if (m_camera_model == "")
-    {
-        throw std::runtime_error("Exif.Image.Model was empty");
-    }
-    m_timestamp_string = exif_data["Exif.Image.DateTime"].toString();
-    if (m_timestamp_string == "")
-    {
-        throw std::runtime_error("Exif.Image.DateTime was empty");
-    }
-
-    m_target_subdirectory = PhotoUtil::generate_directory_name(m_timestamp_string);
-    if (m_target_subdirectory == "")
-    {
-        throw std::runtime_error("Couldn't generate subdirectory name");
-    }
-    std::string source_file_basename(source_file_path.filename());
-    std::string source_file_extension(source_file_path.extension());
-    m_target_filename = PhotoUtil::generate_filename(source_file_basename, source_file_extension, m_camera_model, m_timestamp_string);
-    if (m_target_filename == "")
-    {
-        throw std::runtime_error("Couldn't generate filename");
-    }
+    m_photo_data = std::make_unique<PhotoData>(source_file_path);
 }
 
 void PhotoFile::copy_file()
 {
     std::filesystem::path target_subdirectory_path;
     target_subdirectory_path = m_target_directory_path;
-    target_subdirectory_path /= m_target_subdirectory;
+    target_subdirectory_path /= m_photo_data->get_target_subdirectory();
 
     std::filesystem::path target_entry_path;
     target_entry_path = target_subdirectory_path;
-    target_entry_path /= m_target_filename;
+    target_entry_path /= m_photo_data->get_target_filename();
 
     std::cout << m_source_file_path << " > " << target_entry_path << std::endl;
 
@@ -108,7 +58,7 @@ void PhotoFile::copy_file()
 bool PhotoFile::is_within_date_range(std::time_t &start, std::time_t &end)
 {
     std::tm tm{};
-    std::istringstream ss(m_timestamp_string);
+    std::istringstream ss(m_photo_data->get_timestamp_string());
     ss >> std::get_time(&tm, "%Y:%m:%d %H:%M:%S");
     std::time_t date = std::mktime(&tm);
 

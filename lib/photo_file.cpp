@@ -16,13 +16,12 @@
 #include "local_exception.h"
 
 
-PhotoFile::PhotoFile(const std::filesystem::path &source_file_path, const std::filesystem::path &target_directory_path, const std::shared_ptr<FilesystemInterface> &fs_if)
+PhotoFile::PhotoFile(const std::filesystem::path &source_file_path, const std::filesystem::path &target_directory_path, const std::shared_ptr<PhotoData> &photo_data, const std::shared_ptr<FilesystemInterface> &fs_if)
 {
     m_source_file_path = source_file_path;
     m_target_directory_path = target_directory_path;
+    m_photo_data = photo_data;
     m_fs_if = fs_if;
-
-    m_photo_data = std::make_unique<PhotoData>(source_file_path);
 }
 
 void PhotoFile::copy_file()

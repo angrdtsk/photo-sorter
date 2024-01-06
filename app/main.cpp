@@ -5,6 +5,8 @@
 
 #include <cxxopts.hpp>
 
+#include "../lib/photo_data.h"
+#include "../lib/photo_data_impl.h"
 #include "../lib/filesystem_interface.h"
 #include "../lib/filesystem_interface_impl.h"
 #include "../lib/photo_file.h"
@@ -80,7 +82,8 @@ int main(int argc, char ** argv)
             std::cout << "photo" << std::endl;
             try
             {
-                PhotoFile photo_file(source_entry_path, target_directory_path, fs_if);
+                std::shared_ptr<PhotoData> photo_data = std::make_shared<PhotoDataImpl>(source_entry_path);
+                PhotoFile photo_file(source_entry_path, target_directory_path, photo_data, fs_if);
                 if (!filter_with_date)
                 {
                     photo_file.copy_file();

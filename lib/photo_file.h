@@ -10,7 +10,7 @@
 
 class PhotoFile {
 public:
-    PhotoFile(const std::filesystem::path &, const std::filesystem::path &, const std::shared_ptr<FilesystemInterface> &);
+    PhotoFile(const std::filesystem::path &, const std::filesystem::path &, const std::shared_ptr<PhotoData> &, const std::shared_ptr<FilesystemInterface> &);
     void copy_file();
     bool is_within_date_range(std::time_t &, std::time_t &);
     static bool is_photo_file(const std::string &);
@@ -19,7 +19,7 @@ private:
     std::filesystem::path m_source_file_path;
     std::filesystem::path m_target_directory_path;
     std::shared_ptr<FilesystemInterface> m_fs_if;
-    std::unique_ptr<PhotoData> m_photo_data;
+    std::shared_ptr<PhotoData> m_photo_data;
 };
 
 #endif

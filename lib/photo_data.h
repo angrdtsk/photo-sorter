@@ -7,12 +7,12 @@
 
 class PhotoData {
 public:
-    PhotoData(const std::filesystem::path &);
-    std::string get_camera_model();
-    std::string get_timestamp_string();
-    std::time_t get_timestamp();
-    std::string get_target_subdirectory();
-    std::string get_target_filename();
+    PhotoData(const std::filesystem::path &) {}
+    virtual std::string get_camera_model() = 0;
+    virtual std::string get_timestamp_string() = 0;
+    virtual std::time_t get_timestamp() = 0;
+    virtual std::string get_target_subdirectory() = 0;
+    virtual std::string get_target_filename() = 0;
 
 private:
     std::string m_camera_model;

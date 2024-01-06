@@ -1,9 +1,12 @@
 #include <string>
 #include <iostream>
 #include <filesystem>
+#include <memory>
 
 #include <cxxopts.hpp>
 
+#include "../lib/filesystem_interface.h"
+#include "../lib/filesystem_interface_impl.h"
 #include "../lib/photo_file.h"
 
 void parse_date_range_string(const std::string &string, std::time_t &time)
@@ -64,6 +67,8 @@ int main(int argc, char ** argv)
         }
     }
 
+    std::shared_ptr<FilesystemInterface> fs_if = std::make_shared<FilesystemInterfaceImpl>();
+
     for (const auto &source_entry_it : std::filesystem::recursive_directory_iterator(source_directory_path))
     {
         std::filesystem::path source_entry_path = source_entry_it.path();
@@ -75,7 +80,7 @@ int main(int argc, char ** argv)
             std::cout << "photo" << std::endl;
             try
             {
-                PhotoFile photo_file(source_entry_path, target_directory_path);
+                PhotoFile photo_file(source_entry_path, target_directory_path, fs_if);
                 if (!filter_with_date)
                 {
                     photo_file.copy_file();

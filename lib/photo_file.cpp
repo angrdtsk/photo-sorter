@@ -1,6 +1,7 @@
 #include "photo_file.h"
 
 #include <filesystem>
+#include <memory>
 #include <string>
 #include <iostream>
 #include <iomanip>
@@ -15,10 +16,11 @@
 #include "local_exception.h"
 
 
-PhotoFile::PhotoFile(const std::filesystem::path &source_file_path, const std::filesystem::path &target_directory_path)
+PhotoFile::PhotoFile(const std::filesystem::path &source_file_path, const std::filesystem::path &target_directory_path, const std::shared_ptr<FilesystemInterface> &fs_if)
 {
     m_source_file_path = source_file_path;
     m_target_directory_path = target_directory_path;
+    m_fs_if = fs_if;
 
     m_photo_data = std::make_unique<PhotoData>(source_file_path);
 }
@@ -35,11 +37,11 @@ void PhotoFile::copy_file()
 
     std::cout << m_source_file_path << " > " << target_entry_path << std::endl;
 
-    if (!std::filesystem::exists(target_subdirectory_path))
+    if (!m_fs_if->exists(target_subdirectory_path))
     {
         try
         {
-            std::filesystem::create_directory(target_subdirectory_path);
+            m_fs_if->create_directory(target_subdirectory_path);
         }
         catch (const std::filesystem::filesystem_error &e)
         {
@@ -49,7 +51,7 @@ void PhotoFile::copy_file()
 
     try
     {
-        std::filesystem::copy(m_source_file_path, target_entry_path, std::filesystem::copy_options::recursive);
+        m_fs_if->copy(m_source_file_path, target_entry_path);
     }
     catch (const std::filesystem::filesystem_error &e)
     {
